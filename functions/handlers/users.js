@@ -1,10 +1,13 @@
 const { db } = require('../util/admin');
+db.settings({ ignoreUndefinedProperties: true })
+
 const firebase = require('firebase');
+const FieldValue = require('firebase-admin').firestore.FieldValue;
 
 const config = require('../util/config');
 firebase.initializeApp(config);
 
-const { validateSignupData, validateLoginData } = require('../util/validators')
+const { validateSignupData, validateLoginData } = require('../util/validators');
 
 exports.signUp = (request, response) => {
     const newUser = {
@@ -12,13 +15,11 @@ exports.signUp = (request, response) => {
       password: request.body.password,
       confirmPassword: request.body.confirmPassword,
       handle: request.body.handle,
-  
     }
   
   const {valid, errors} = validateSignupData (newUser)
   
   if(!valid) {return response.status(400).json(errors)}
-
 
     let token, userId;
     db.doc(`/users/${newUser.handle}`).get()
@@ -39,6 +40,7 @@ exports.signUp = (request, response) => {
           handle: newUser.handle,
           email: newUser.email,
           createdAt: new Date().toISOString(),
+          friends: [request.body.friends],
           userId
         };
   
@@ -65,9 +67,7 @@ exports.signUp = (request, response) => {
       email: request.body.email,
       password: request.body.password,
       };
-
     const {valid, errors} = validateLoginData (user)
-  
   if(!valid) {return response.status(400).json(errors)}
 
       if(Object.keys(errors).length > 0){
@@ -88,4 +88,29 @@ exports.signUp = (request, response) => {
           return response.status(500).json({error: err.code})
         }
       })
+  }
+
+  
+  exports.addAFriend = (request, response) => {
+    db.doc(`/users/${request.body.friends}`).get()
+    .then((doc) => {
+      if(doc.id === request.user.handle){
+        return response.status(200).json({message: `You cannot add yourself`})
+      } else if (!doc.exists){
+        return response.status(400).json({ handle: 'This handle does not  exist'})
+
+      } else if (doc.exists){
+        db.doc(`/users/${request.user.handle}`).update({
+          friends: FieldValue.arrayUnion(request.body.friends)
+        })
+        .then(() =>{
+         return response.status(400).json({ message: 'Sucess'})
+      })        
+        }
+  })
+    .catch((error) => {
+    console.error("Error writing document: ", error);
+    return response.status(200).json({error: 'something went wrong'})
+});
+
   }
