@@ -1,30 +1,49 @@
 const { db } = require('../util/admin')
 const { admin } = require('../util/admin')
 
-
-exports.getAllScreams = (request, response) => {
+exports.getAllPosts = (request, response) => {
     db
-     .collection('screams')
+     .collection('posts')
      .get()
      .then(data => {
-         let screams = []
+         let posts = []
          data.forEach(doc => {
            console.log('HERE', doc.data())
-           screams.push(doc.data())
+           posts.push(doc.data())
          }) 
-         return response.json(screams)
+         return response.json(posts)
      })
      .catch((err) => console.log(err))
    }
 
-   exports.addAScream = (request, response) => {
+   exports.getAuthenticatedUserPosts = (request, response) => {
+    db
+     .collection('posts')
+     .where('handle', '==', request.params.handle)
+     .get()
+     .then(data => {
+
+      if(request.params.handle !== request.user.handle){
+        return response.status(501).json({error: 'Unauthorized Request'})
+      }
+         let posts = []
+         data.forEach(doc => {
+           console.log('HERE', doc.data())
+           posts.push(doc.data())
+         }) 
+         return response.json(posts)
+     })
+     .catch((err) => console.log(err))
+   }
+
+   exports.addAPost = (request, response) => {
     const newScream = {
      body: request.body.body,
-     userHandle: request.user.handle,
+     handle: request.user.handle,
      createdAt: admin.firestore.Timestamp.fromDate(new Date())
    };
   db
-   .collection('screams')
+   .collection('posts')
    .add(newScream)
    .then(doc => {
      response.json({message: `document ${doc.id} created`})

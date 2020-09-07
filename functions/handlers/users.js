@@ -83,11 +83,33 @@ exports.signUp = (request, response) => {
       .catch((err) =>{
         console.error(err)
         if(err.code === "auth/wrong-password"){
-          return response.status(500).json({general: 'Invalid Credentials'})
+          return response.status(500).json({password: 'Invalid Credentials'})
         } else {
           return response.status(500).json({error: err.code})
         }
       })
+  }
+
+  exports.getAuthenticatedUser = (request, response) => {
+    if(request.body.handle === ''){ 
+      return response.status(500).json({error: 'Must submit a handle'})
+    } 
+    const authenticatedUserData = {}
+    db.doc(`/users/${request.user.handle}`).get()
+    .then((doc) => {
+    if(doc.exists){
+      authenticatedUserData.profile = doc.data()
+      return response.status(200).json(authenticatedUserData)
+  } else {
+    return response.status(501).json({error: 'This handle does not exist'})
+  }
+  })
+ 
+    .catch((error) => {
+    console.error("Error writing document: ", error);
+    return response.status(200).json({error: 'something went wrong'})
+});
+
   }
 
   
@@ -101,7 +123,7 @@ exports.signUp = (request, response) => {
 
       } else if (doc.exists){
         db.doc(`/users/${request.user.handle}`).update({
-          friends: FieldValue.arrayUnion(request.body.friends)
+          friends: FieldValue.arrayUnion({handle: request.body.friends})
         })
         .then(() =>{
          return response.status(400).json({ message: 'Sucess'})

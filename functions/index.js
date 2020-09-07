@@ -8,18 +8,19 @@ const FBAuth = require('./util/fbAuth')
 const cors = require('cors');
 app.use(cors())
 
-const { getAllScreams, addAScream } = require('./handlers/screams')
-const {signUp, login, addUserDetails, addAFriend } = require('./handlers/users')
+const { getAuthenticatedUserPosts, getAllPosts ,addAPost} = require('./handlers/screams')
+const {signUp, login, getAuthenticatedUser, addAFriend } = require('./handlers/users')
 
-// Scream Route
-app.get('/screams', getAllScreams )
-app.post('/screams', FBAuth, addAScream )
+// posts Route
+app.get('/posts', getAllPosts)
+app.get('/:handle/posts', FBAuth, getAuthenticatedUserPosts)
+app.post('/posts', FBAuth, addAPost )
 
 
 //signup route
 app.post('/signup', signUp);
 app.post('/login', login )
-// app.post('/user', FBAuth, addUserDetails)
+app.get('/user', FBAuth, getAuthenticatedUser)
 app.post('/user', FBAuth, addAFriend)
 
 exports.api = functions.https.onRequest(app)
