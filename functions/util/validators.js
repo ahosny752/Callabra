@@ -30,6 +30,9 @@ const isEmail = (email) =>{
           if(data.password !== data.confirmPassword){
             errors.confirmPassword = "Passwords must match"
           }
+          if(isEmpty(data.confirmPassword)){
+            errors.confirmPassword = "Must not be empty"
+          }
           
 
           return {

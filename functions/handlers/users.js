@@ -16,7 +16,6 @@ exports.signUp = (request, response) => {
       confirmPassword: request.body.confirmPassword,
       handle: request.body.handle,
     }
-  
   const {valid, errors} = validateSignupData (newUser)
   
   if(!valid) {return response.status(400).json(errors)}
@@ -54,7 +53,7 @@ exports.signUp = (request, response) => {
       if (err.code === 'auth/weak-password'){
         return response.status(501).json({ password: "Password must be at least 6 characters"})
       } else if (err.code === 'auth/email-already-in-use'){
-        return response.status(501).json({ email: 'Email is already in use'})
+        return response.status(501).json({ email: 'Email is already associated with an account. Please Log in'})
        } else {
         return response.status(500).json({error: err.code})
       }
@@ -83,7 +82,10 @@ exports.signUp = (request, response) => {
       .catch((err) =>{
         console.error(err)
         if(err.code === "auth/wrong-password"){
-          return response.status(500).json({password: 'Invalid Credentials'})
+          return response.status(500).json({password: 'Wrong password, please try again'})
+        } 
+        if(err.code === "auth/user-not-found"){
+          return response.status(500).json({email: 'This email address is not associated with an account.'})
         } else {
           return response.status(500).json({error: err.code})
         }
@@ -113,8 +115,8 @@ exports.signUp = (request, response) => {
   }
 
   
-  exports.addAFriend = (request, response) => {
-    db.doc(`/users/${request.body.friends}`).get()
+  exports.addAUser = (request, response) => {
+    db.doc(`/users/${request.body.handle}`).get()
     .then((doc) => {
       if(doc.id === request.user.handle){
         return response.status(200).json({message: `You cannot add yourself`})
@@ -123,7 +125,7 @@ exports.signUp = (request, response) => {
 
       } else if (doc.exists){
         db.doc(`/users/${request.user.handle}`).update({
-          friends: FieldValue.arrayUnion({handle: request.body.friends})
+          friends: FieldValue.arrayUnion({handle: request.body.handle})
         })
         .then(() =>{
          return response.status(400).json({ message: 'Sucess'})
