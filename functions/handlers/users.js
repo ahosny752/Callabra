@@ -40,6 +40,21 @@ exports.signUp = (request, response) => {
           email: newUser.email,
           createdAt: new Date().toISOString(),
           friends: [request.body.friends],
+          avatarUrl: '',
+          firstName: '',
+          lastName: '',
+          instrument: [
+            {name: 'Guitar', canPlay: false},
+            {name: 'Bass', canPlay: false},
+            {name: 'Drums', canPlay: false},
+            {name: 'Piano', canPlay: false},
+          ],
+          genre: [
+            {name: 'R&B', canPlay: false},
+            {name: 'Jazz', canPlay: false},
+            {name: 'Blues', canPlay: false},
+            {name: 'Rock', canPlay: false},
+          ],
           userId
         };
   
@@ -66,9 +81,11 @@ exports.signUp = (request, response) => {
       email: request.body.email,
       password: request.body.password,
       };
-    const {valid, errors} = validateLoginData (user)
-  if(!valid) {return response.status(400).json(errors)}
 
+    const {valid, errors} = validateLoginData (user)
+    if(!valid) {return response.status(400).json(errors)}
+
+      let idToken;
       if(Object.keys(errors).length > 0){
         return response.status(400).json({errors})
       }
@@ -76,9 +93,16 @@ exports.signUp = (request, response) => {
       .then((data) =>{
         return data.user.getIdToken()
       })
-      .then((token) =>{
-        return response.json({token})
+      .then((token) => {
+        idToken = token
+        return db.collection("users").where("email", "==", request.body.email).get()
       })
+        .then((data) => {
+          data.forEach((doc) =>{
+           handle = doc.data().handle
+          })
+          return response.json({token: idToken, handle})
+        })
       .catch((err) =>{
         console.error(err)
         if(err.code === "auth/wrong-password"){
@@ -124,14 +148,48 @@ exports.signUp = (request, response) => {
         return response.status(400).json({ handle: 'This handle does not  exist'})
 
       } else if (doc.exists){
+
+     
+//check if friend was already added
+       db .collection("friends")
+        .where("addedBy", "==", request.user.handle)
+        .where("addedUser", "==", request.body.handle)
+        .get()
+
+        .then((data)=>{
+        let currentFriendsWithThisHandle = []
+        data.forEach((doc) =>{
+          currentFriendsWithThisHandle.push(doc.data())
+          return currentFriendsWithThisHandle;
+        })
+        
+        console.log('current friends', currentFriendsWithThisHandle)
+const isAfriend = (currentFriendsWithThisHandle.length > 0  ? true: false)
+
+if(isAfriend){ // if friend already is in friends list
+  return response.status(400).json({ general: 'You have already added this friend'})
+}
+if(!isAfriend){ //if not added in friends list
+     const addUserCredentials = {
+          addedAt: request.body.addedAt,
+          addedBy: request.user.handle,
+          addedUser: request.body.handle,
+        }
+
+        db
+        .collection('friends')
+        .add(addUserCredentials)
+
         db.doc(`/users/${request.user.handle}`).update({
           friends: FieldValue.arrayUnion({handle: request.body.handle})
         })
-        .then(() =>{
-         return response.status(400).json({ message: 'Sucess'})
-      })        
-        }
-  })
+           return response.status(501).json({ general: `${request.body.handle} added succesfully`})
+
+            }   
+        })
+      }
+    })
+ 
     .catch((error) => {
     console.error("Error writing document: ", error);
     return response.status(200).json({error: 'something went wrong'})

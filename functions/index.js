@@ -8,13 +8,17 @@ const FBAuth = require('./util/fbAuth')
 const cors = require('cors');
 app.use(cors())
 
+const {getMyTracks} = require('./handlers/tracks')
 const { getAuthenticatedUserPosts, getAllPosts ,addAPost} = require('./handlers/screams')
 const {signUp, login, getAuthenticatedUser, addAUser } = require('./handlers/users')
+
+//tracks route
+app.get('/:handle/tracks', FBAuth, getMyTracks)
 
 // posts Route
 app.get('/posts', getAllPosts)
 app.get('/:handle/posts', FBAuth, getAuthenticatedUserPosts)
-app.post('/posts', FBAuth, addAPost )
+app.post('/:handle/posts', FBAuth, addAPost )
 
 
 //signup route

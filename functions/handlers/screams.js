@@ -4,11 +4,11 @@ const { admin } = require('../util/admin')
 exports.getAllPosts = (request, response) => {
     db
      .collection('posts')
+     .orderBy('createdAt')
      .get()
      .then(data => {
          let posts = []
          data.forEach(doc => {
-           console.log('HERE', doc.data())
            posts.push(doc.data())
          }) 
          return response.json(posts)
@@ -20,6 +20,7 @@ exports.getAllPosts = (request, response) => {
     db
      .collection('posts')
      .where('handle', '==', request.params.handle)
+     .orderBy('createdAt')
      .get()
      .then(data => {
 
@@ -28,7 +29,6 @@ exports.getAllPosts = (request, response) => {
       }
          let posts = []
          data.forEach(doc => {
-           console.log('HERE', doc.data())
            posts.push(doc.data())
          }) 
          return response.json(posts)
@@ -40,8 +40,10 @@ exports.getAllPosts = (request, response) => {
     const newScream = {
      body: request.body.body,
      handle: request.user.handle,
-     createdAt: admin.firestore.Timestamp.fromDate(new Date())
+     createdAt: new Date().toISOString()
+
    };
+
   db
    .collection('posts')
    .add(newScream)
@@ -49,7 +51,7 @@ exports.getAllPosts = (request, response) => {
      response.json({message: `document ${doc.id} created`})
    })
    .catch((err)=>{
-     response.status(500).json({error: 'somthing went wrong'})
+     response.status(500).json({error: 'something went wrong'})
      console.error(err);
    })
   }
