@@ -15,13 +15,14 @@ const useRequest = (url, swrOptions) => {
 
   // eslint-disable-next-line max-len
   const [postBodyData, setPostBodyData] = useState({ postData: null, postError: null, postIsLoading: false });
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
   const {
     data: response, error, isValidating, revalidate, mutate,
   } = useSWR(
     JSON.stringify(url),
     async () => {
-      if (url === '/login' || url === '/signup') {
+      if (url === `${baseURL}/login` || url === `${baseURL}/signup`) {
         return null;
       }
       if (url.includes('undefined')) {

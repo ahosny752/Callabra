@@ -38,9 +38,7 @@ const MyProfile = () => {
           </Row>
           {/* <Row>
             <Col lg={12}>
-              <MyTracksWidget
-                profile={profile}
-              />
+              <Applet>test</Applet>
             </Col>
           </Row> */}
 

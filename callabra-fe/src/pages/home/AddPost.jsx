@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { UserProfileContext } from '../../contexts/UserProfileContext';
 
 import useRequest from '../../hooks/useRequest';
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const AddPost = ({
   allPostMutate,
@@ -18,8 +17,9 @@ const AddPost = ({
     shouldRetryOnError: false,
     revalidateOnFocus: true,
   };
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
-  const url = `${baseUrl}/${handle}/posts`;
+  const url = `${baseURL}/${handle}/posts`;
   const {
     post,
     data,

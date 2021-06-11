@@ -11,7 +11,6 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import Applet from '../../../components/Applet';
 import ProfileLoadingSkeletons from '../../../components/LoadingSkeletons';
 import useRequest from '../../../hooks/useRequest';
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const MyTracksWidget = ({
   profile,
@@ -21,18 +20,36 @@ const MyTracksWidget = ({
     shouldRetryOnError: false,
     revalidateOnFocus: true,
   };
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
   const { handle } = profile;
   const [track, setTrack] = useState({});
-  const { data, error, isValidating } = useRequest(`${baseUrl}/${handle}/tracks`, swrOptions);
+  const { 
+    data,
+     error, 
+     isValidating 
+    } = useRequest(`${baseURL}/${handle}/tracks`, swrOptions);
 
   const tracks = data || [];
   const trackData = tracks[0] || [];
 
   const trackArray = trackData.tracks;
+  const trackArrayDummyData = [
+    {
+      trackName: "The Wolf of Ball Street",
+      trackNumber: 795759691
+    },
+    {
+      trackName: "Perfect",
+      trackNumber: 605088942
+    },
+    {
+      trackName: "Isaiah Brisco Freestyle",
+      trackNumber: 196376899
+    }
+]
 
-  console.log(trackArray, 'track array');
-  // const {
+// const {
 
   //   avatarUrl,
   //   createdAt,
@@ -64,12 +81,18 @@ const MyTracksWidget = ({
     <Applet
       width="100%"
     >
-      {trackArray ? trackArray.map((item, idx) => (
-        <div>
+      {trackArrayDummyData ? trackArrayDummyData.map((item, idx) => {
+        return (
+<div>
           <span>{item.trackName}</span>
           <span><button onClick={() => handleClick(idx, item.trackName, item.trackNumber)} type="button">play</button></span>
         </div>
-      )) : ''}
+
+        )
+      }
+        
+        
+       ) : ''}
     </Applet>
   );
 };

@@ -4,7 +4,7 @@ import {
   Link,
   useHistory,
 } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
+import Button from 'react-bootstrap/esm/Button';
 
 import { Row, Col } from '../styledComponents/Grid.styled';
 import LoginContainer, { LoginTextFieldContainer } from '../styledComponents/Login.styled';
@@ -12,7 +12,6 @@ import LoginContainer, { LoginTextFieldContainer } from '../styledComponents/Log
 import useRequest from '../hooks/useRequest';
 
 import { UserProfileContext } from '../contexts/UserProfileContext';
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const Signup = () => {
   const history = useHistory();
@@ -27,6 +26,9 @@ const Signup = () => {
     revalidateOnFocus: false,
 
   };
+
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
+
   const {
     post,
     postData,
@@ -34,7 +36,7 @@ const Signup = () => {
     postIsLoading,
     data,
     mutate,
-  } = useRequest(`${baseUrl}/signup`, swrOptions);
+  } = useRequest(`${baseURL}/signup`, swrOptions);
 
   const handleLogin = () => {
     const userData = {
@@ -97,6 +99,7 @@ const Signup = () => {
               defaultValue={password}
               helperText={postError && postError.password ? postError.password : ''}
               variant="outlined"
+              type="password"
             />
           </LoginTextFieldContainer>
         </Col>
@@ -112,6 +115,7 @@ const Signup = () => {
               defaultValue={confirmPassword}
               helperText={postError && postError.confirmPassword ? postError.confirmPassword : ''}
               variant="outlined"
+              type="password"
             />
           </LoginTextFieldContainer>
         </Col>

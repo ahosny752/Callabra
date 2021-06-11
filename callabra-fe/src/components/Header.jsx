@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import Navbar from 'react-bootstrap/Navbar';
+import Navbar from 'react-bootstrap/esm/Navbar';
 // import NavDropdown from 'react-bootstrap/NavDropdown';
-import Nav from 'react-bootstrap/Nav';
+import Nav from 'react-bootstrap/esm/Nav';
 import {
   useParams,
 } from 'react-router-dom';

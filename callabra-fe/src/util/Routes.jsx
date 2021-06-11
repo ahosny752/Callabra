@@ -20,7 +20,8 @@ import MyProfile from '../pages/profiles/myprofile/MyProfile';
 import Container from '../styledComponents/Grid.styled';
 import Navbar from '../pages/Navbar';
 import GridContainer from '../components/GridContainer';
-// test
+// testy
+
 const Routes = () => {
   const [profile, setProfile] = useContext(UserProfileContext);
   const { handle } = profile;
@@ -55,9 +56,6 @@ const Routes = () => {
       <Container>
         <GridContainer>
           <Switch>
-          <Route exact path="/login">
-              {isAuthenticated ? <Home /> : <Login />}
-            </Route>
             <Route exact path="/login">
               {isAuthenticated ? <Home /> : <Login />}
             </Route>

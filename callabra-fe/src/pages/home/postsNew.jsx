@@ -5,8 +5,6 @@ import logoutUser from '../../util/helperFunctions';
 import { UserProfileContext } from '../../contexts/UserProfileContext';
 import useRequest from '../../hooks/useRequest';
 
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
-
 const NewPost = () => {
   const [profile, setProfile] = useContext(UserProfileContext);
   const [postVal, setPostVal] = useState('');
@@ -19,6 +17,7 @@ const NewPost = () => {
 
   const { handle } = profile;
   const fetcher = (url) => fetch(url).then((r) => r.json());
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
   const {
     data: blogData,
@@ -26,7 +25,7 @@ const NewPost = () => {
     error,
     mutate,
     revalidate,
-  } = useSWR(`${baseUrl}/posts`, fetcher, swrOptions);
+  } = useSWR(`${baseURL}/posts`, fetcher, swrOptions);
 
   const addButton = async () => {
     const options = {

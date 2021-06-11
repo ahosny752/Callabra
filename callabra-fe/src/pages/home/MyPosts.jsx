@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { UserProfileContext } from '../../contexts/UserProfileContext';
 import useRequest from '../../hooks/useRequest';
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const MyPosts = () => {
   const [profile] = useContext(UserProfileContext);
@@ -10,10 +9,11 @@ const MyPosts = () => {
     shouldRetryOnError: false,
     revalidateOnFocus: false,
   };
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
   const {
     data,
-  } = useRequest(`${baseUrl}/posts`, swrOptions);
+  } = useRequest(`${baseURL}/posts`, swrOptions);
 
   const userBlogs = data || [];
   const blogs = userBlogs.map((item) => item.body);

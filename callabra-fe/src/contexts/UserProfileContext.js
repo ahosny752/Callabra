@@ -4,7 +4,6 @@ import axios from 'axios';
 import useRequest from '../hooks/useRequest';
 
 const UserProfileContext = React.createContext([{}, () => {}]);
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const UserProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState({
@@ -17,10 +16,11 @@ const UserProfileProvider = ({ children }) => {
   // const { data } = useRequest('/user');
 
   // console.log('user profile', data);
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
   useEffect(() => {
     const options = {
-      url: `${baseUrl}/user`,
+      url: `${baseURL}/user`,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',

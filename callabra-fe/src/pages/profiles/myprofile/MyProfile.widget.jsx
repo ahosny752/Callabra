@@ -12,8 +12,6 @@ import Applet from '../../../components/Applet';
 import ProfileLoadingSkeletons from '../../../components/LoadingSkeletons';
 import useRequest from '../../../hooks/useRequest';
 
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
-
 const MyProfileWidget = ({
   profile,
 }) => {
@@ -21,8 +19,9 @@ const MyProfileWidget = ({
     shouldRetryOnError: false,
     revalidateOnFocus: true,
   };
+  const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
-  const { data, error, isValidating } = useRequest(`${baseUrl}/user`, swrOptions);
+  const { data, error, isValidating } = useRequest(`${baseURL}/user`, swrOptions);
 
   const userData = data || {};
 
@@ -101,9 +100,9 @@ const MyProfileWidget = ({
 
         subheader={(
           <div>
-            <div>ajhosny@gmail.com </div>
+            <div>{email}</div>
             <div>
-              lives in  Easton, Pa
+              lives in:  
             </div>
             <hr
               style={{
@@ -221,17 +220,7 @@ const MyProfileWidget = ({
 
           <div>
             <Typography>
-              A long ass fucking bio
-              A long ass fucking bio
-
-              A long ass fucking bio
-
-              A long ass fucking bio
-
-              A long ass fucking bio
-
-              A long ass fucking bio
-              A long ass fucking bio
+            My bio will go here
 
             </Typography>
           </div>

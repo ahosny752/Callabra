@@ -5,7 +5,7 @@ import {
   Link,
   useHistory,
 } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
+import Button from 'react-bootstrap/esm/Button';
 import Applet from '../components/Applet';
 
 import { Row, Col } from '../styledComponents/Grid.styled';
@@ -14,8 +14,6 @@ import LoginContainer, { LoginTextFieldContainer } from '../styledComponents/Log
 import useRequest from '../hooks/useRequest';
 
 import { UserProfileContext } from '../contexts/UserProfileContext';
-
-const baseUrl = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
 
 const Login = () => {
   const history = useHistory();
@@ -28,7 +26,7 @@ const Login = () => {
     revalidateOnFocus: false,
 
   };
-
+const baseURL = 'https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
   const {
     post,
     postData,
@@ -36,7 +34,7 @@ const Login = () => {
     postIsLoading,
     data,
     mutate,
-  } = useRequest(`${baseUrl}/login`, swrOptions);
+  } = useRequest(`${baseURL}/login`, swrOptions);
 
   const handleLogin = async () => {
     const body = {
@@ -44,6 +42,7 @@ const Login = () => {
       password,
     };
     await post(body);
+    
   };
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const Login = () => {
       if (token) {
         localStorage.setItem('FBIdToken', token);
         setProfile(() => ({ ...profile, isAuthenticated: true }));
-        history.push('/home');
+        history.push(`/${handle}`);
       }
     }
   }, [postData, data, email, history, profile, setProfile, mutate]);
@@ -88,6 +87,7 @@ const Login = () => {
             defaultValue={password}
             helperText={postError && postError.password ? postError.password : ''}
             variant="outlined"
+            type="password"
           />
           <br />
           <Button
