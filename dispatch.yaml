@@ -1,4 +1,4 @@
 dispatch:
     # Send all trafic on /api to api service.
-    - url: '*/https://us-central1-fir-react-9c5f4.cloudfunctions.net/api/'
+    - url: '*/https://us-central1-fir-react-9c5f4.cloudfunctions.net/api'
       service: api
